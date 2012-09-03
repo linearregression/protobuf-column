@@ -54,6 +54,7 @@ public abstract class Column {
 
     @Override
     public ByteBuffer[] asByteBuffers() {
+      arr.trim();
       ByteBuffer b = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE * arr.size());
       b.asIntBuffer().put(arr.elements());
       return new ByteBuffer[] { b };
@@ -86,6 +87,7 @@ public abstract class Column {
 
     @Override
     public ByteBuffer[] asByteBuffers() {
+      arr.trim();
       ByteBuffer b = ByteBuffer.allocate(Long.SIZE / Byte.SIZE * arr.size());
       b.asLongBuffer().put(arr.elements());
       return new ByteBuffer[] { b };
@@ -118,6 +120,7 @@ public abstract class Column {
 
     @Override
     public ByteBuffer[] asByteBuffers() {
+      arr.trim();
       ByteBuffer b = ByteBuffer.allocate(Float.SIZE / Byte.SIZE * arr.size());
       b.asFloatBuffer().put(arr.elements());
       return new ByteBuffer[] { b };
@@ -150,6 +153,7 @@ public abstract class Column {
 
     @Override
     public ByteBuffer[] asByteBuffers() {
+      arr.trim();
       ByteBuffer b = ByteBuffer.allocate(Double.SIZE / Byte.SIZE * arr.size());
       b.asDoubleBuffer().put(arr.elements());
       return new ByteBuffer[] { b };
@@ -182,6 +186,7 @@ public abstract class Column {
 
     @Override
     public ByteBuffer[] asByteBuffers() {
+      arr.trim();
       return new ByteBuffer[] { ByteBuffer.allocate(arr.size()).put(
           arr.elements()) };
     }
@@ -214,6 +219,7 @@ public abstract class Column {
 
     @Override
     public ByteBuffer[] asByteBuffers() {
+      arr.trim();
       return new ByteBuffer[] { ByteBuffer.allocate(arr.size()).put(
           arr.elements()) };
     }
@@ -249,6 +255,7 @@ public abstract class Column {
 
     @Override
     public ByteBuffer[] asByteBuffers() {
+      arr.trim();
       ByteBuffer b = ByteBuffer.allocate(Long.SIZE / Byte.SIZE * arr.size());
       b.asLongBuffer().put(arr.elements());
       return new ByteBuffer[] { b };
@@ -293,6 +300,8 @@ public abstract class Column {
 
     @Override
     public ByteBuffer[] asByteBuffers() {
+      arr.trim();
+      posIndex.trim();
       ByteBuffer b = ByteBuffer.allocate(arr.size()).put(arr.elements());
       ByteBuffer ib = ByteBuffer
           .allocate(Integer.SIZE / Byte.SIZE * arr.size());
