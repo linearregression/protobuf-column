@@ -30,6 +30,13 @@ public abstract class Column {
   public abstract void initialize(Iterator<ByteBuffer> byteBuffers);
 
   /**
+   * Serialize the column into an array of ByteBuffer.
+   * 
+   * @return an array of ByteBuffer serializing this column.
+   */
+  public abstract ByteBuffer[] asByteBuffers();
+
+  /**
    * Primitive integer column.
    */
   public static class IntColumn extends Column {
@@ -43,6 +50,13 @@ public abstract class Column {
     @Override
     public void initialize(Iterator<ByteBuffer> byteBuffers) {
       arr = new IntArrayList(byteBuffers.next().asIntBuffer().array());
+    }
+
+    @Override
+    public ByteBuffer[] asByteBuffers() {
+      ByteBuffer b = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE * arr.size());
+      b.asIntBuffer().put(arr.elements());
+      return new ByteBuffer[] { b };
     }
 
     public int get(int index) {
@@ -70,6 +84,13 @@ public abstract class Column {
       arr = new LongArrayList(byteBuffers.next().asLongBuffer().array());
     }
 
+    @Override
+    public ByteBuffer[] asByteBuffers() {
+      ByteBuffer b = ByteBuffer.allocate(Long.SIZE / Byte.SIZE * arr.size());
+      b.asLongBuffer().put(arr.elements());
+      return new ByteBuffer[] { b };
+    }
+
     public long get(int index) {
       return arr.get(index);
     }
@@ -93,6 +114,13 @@ public abstract class Column {
     @Override
     public void initialize(Iterator<ByteBuffer> byteBuffers) {
       arr = new FloatArrayList(byteBuffers.next().asFloatBuffer().array());
+    }
+
+    @Override
+    public ByteBuffer[] asByteBuffers() {
+      ByteBuffer b = ByteBuffer.allocate(Float.SIZE / Byte.SIZE * arr.size());
+      b.asFloatBuffer().put(arr.elements());
+      return new ByteBuffer[] { b };
     }
 
     public float get(int index) {
@@ -120,6 +148,13 @@ public abstract class Column {
       arr = new DoubleArrayList(byteBuffers.next().asDoubleBuffer().array());
     }
 
+    @Override
+    public ByteBuffer[] asByteBuffers() {
+      ByteBuffer b = ByteBuffer.allocate(Double.SIZE / Byte.SIZE * arr.size());
+      b.asDoubleBuffer().put(arr.elements());
+      return new ByteBuffer[] { b };
+    }
+
     public double get(int index) {
       return arr.get(index);
     }
@@ -143,6 +178,12 @@ public abstract class Column {
     @Override
     public void initialize(Iterator<ByteBuffer> byteBuffers) {
       arr = new ByteArrayList(byteBuffers.next().array());
+    }
+
+    @Override
+    public ByteBuffer[] asByteBuffers() {
+      return new ByteBuffer[] { ByteBuffer.allocate(arr.size()).put(
+          arr.elements()) };
     }
 
     public byte get(int index) {
@@ -169,6 +210,12 @@ public abstract class Column {
     @Override
     public void initialize(Iterator<ByteBuffer> byteBuffers) {
       arr = new ByteArrayList(byteBuffers.next().array());
+    }
+
+    @Override
+    public ByteBuffer[] asByteBuffers() {
+      return new ByteBuffer[] { ByteBuffer.allocate(arr.size()).put(
+          arr.elements()) };
     }
 
     public boolean get(int index) {
@@ -198,6 +245,13 @@ public abstract class Column {
     @Override
     public void initialize(Iterator<ByteBuffer> byteBuffers) {
       arr = new LongArrayList(byteBuffers.next().asLongBuffer().array());
+    }
+
+    @Override
+    public ByteBuffer[] asByteBuffers() {
+      ByteBuffer b = ByteBuffer.allocate(Long.SIZE / Byte.SIZE * arr.size());
+      b.asLongBuffer().put(arr.elements());
+      return new ByteBuffer[] { b };
     }
 
     public boolean get(int index) {
@@ -235,6 +289,15 @@ public abstract class Column {
     public void initialize(Iterator<ByteBuffer> byteBuffers) {
       arr = new ByteArrayList(byteBuffers.next().array());
       posIndex = new IntArrayList(byteBuffers.next().asIntBuffer().array());
+    }
+
+    @Override
+    public ByteBuffer[] asByteBuffers() {
+      ByteBuffer b = ByteBuffer.allocate(arr.size()).put(arr.elements());
+      ByteBuffer ib = ByteBuffer
+          .allocate(Integer.SIZE / Byte.SIZE * arr.size());
+      ib.asIntBuffer().put(posIndex.elements());
+      return new ByteBuffer[] { b, ib };
     }
 
     public String get(int index) {
