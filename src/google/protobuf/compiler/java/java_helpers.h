@@ -205,6 +205,8 @@ string GenerateGetBitFromLocal(int bitIndex);
 // Example: "to_bitField1_ = (to_bitField1_ | 0x04)"
 string GenerateSetBitToLocal(int bitIndex);
 
+const char* ColumnClassName(JavaType type);
+
 }  // namespace java
 }  // namespace compiler
 }  // namespace protobuf

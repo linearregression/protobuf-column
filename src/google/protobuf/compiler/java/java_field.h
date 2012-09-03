@@ -57,6 +57,7 @@ class FieldGenerator {
 
   virtual int GetNumBitsForMessage() const = 0;
   virtual int GetNumBitsForBuilder() const = 0;
+
   virtual void GenerateInterfaceMembers(io::Printer* printer) const = 0;
   virtual void GenerateMembers(io::Printer* printer) const = 0;
   virtual void GenerateBuilderMembers(io::Printer* printer) const = 0;
@@ -70,6 +71,15 @@ class FieldGenerator {
   virtual void GenerateSerializedSizeCode(io::Printer* printer) const = 0;
   virtual void GenerateFieldBuilderInitializationCode(io::Printer* printer)
       const = 0;
+
+  // Columnar collection methods.
+  virtual void GenerateColumnarCollectionMembers(io::Printer* printer) const {}
+  virtual void GenerateColumnarInitWithCapacity(io::Printer* printer) const {}
+  virtual void GenerateColumnarInitWithByteBuffers(io::Printer* printer)
+      const {}
+  virtual void GenerateColumnarAddToCollection(io::Printer* printer) const {}
+  virtual void GenerateColumnarGetByteBuffers(io::Printer* printer) const {}
+  virtual void GenerateColumnarClassMembers(io::Printer* printer) const {}
 
   virtual void GenerateEqualsCode(io::Printer* printer) const = 0;
   virtual void GenerateHashCode(io::Printer* printer) const = 0;

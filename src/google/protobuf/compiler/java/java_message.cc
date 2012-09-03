@@ -354,6 +354,8 @@ void MessageGenerator::Generate(io::Printer* printer) {
 
   GenerateDescriptorMethods(printer);
 
+  GenerateColumnarCollection(printer);
+
   // Nested types
   for (int i = 0; i < descriptor_->enum_type_count(); i++) {
     EnumGenerator(descriptor_->enum_type(i)).Generate(printer);
@@ -1279,6 +1281,123 @@ void MessageGenerator::GenerateExtensionRegistrationCode(io::Printer* printer) {
     MessageGenerator(descriptor_->nested_type(i))
       .GenerateExtensionRegistrationCode(printer);
   }
+}
+
+// ===================================================================
+
+void MessageGenerator::GenerateColumnarCollection(io::Printer* printer) {
+
+  // Begin Collection.
+  printer->Print(
+    "public static class ColumnarCollection implements\n"
+    "  edu.berkeley.amplab.columnar.ColumnarCollection"
+    "<$classname$OrBuilder> {\n",
+    "classname", descriptor_->name());
+  printer->Indent();
+
+    for (int i = 0; i < descriptor_->field_count(); i++) {
+      printer->Print("\n");
+      field_generators_.get(descriptor_->field(i))
+                       .GenerateColumnarCollectionMembers(printer);
+    }
+    printer->Print("\n");
+
+    // public abstract void initialize(int initialCapacity);
+    printer->Print(
+      "@java.lang.Override\n"
+      "public void initialize(int initialCapacity) {\n");
+    printer->Indent();
+      for (int i = 0; i < descriptor_->field_count(); i++) {
+        field_generators_.get(descriptor_->field(i))
+                         .GenerateColumnarInitWithCapacity(printer);
+      }
+    printer->Outdent();
+    printer->Print(
+      "}\n");
+
+    // TODO(rxin): size() needs to be properly initialized.
+    // public abstract void initialize(Iterable<ByteBuffer> byteBuffers);
+    printer->Print(
+      "@java.lang.Override\n"
+      "public void initialize(Iterable<ByteBuffer> byteBuffers) {\n"
+      "  java.util.Iterator<ByteBuffer> iter = byteBuffers.iterator();\n");
+    printer->Indent();
+      for (int i = 0; i < descriptor_->field_count(); i++) {
+        field_generators_.get(descriptor_->field(i))
+                         .GenerateColumnarInitWithByteBuffers(printer);
+      }
+    printer->Outdent();
+    printer->Print(
+      "}\n");
+
+    // public abstract int size();
+    printer->Print(
+      "int size;\n"
+      "@java.lang.Override\n"
+      "public int size() { return size; }\n");
+
+    // public abstract E get(int index);
+    printer->Print(
+      "@java.lang.Override\n"
+      "public $classname$OrBuilder get(int index) {"
+      " return new $classname$.Columnar(this, index); "
+      "}\n",
+      "classname", descriptor_->name());
+
+    // public abstract void add(E elem);
+    printer->Print(
+      "@java.lang.Override\n"
+      "public void add($classname$OrBuilder elem) {\n"
+      "  size ++;\n",
+      "classname", descriptor_->name());
+    printer->Indent();
+      for (int i = 0; i < descriptor_->field_count(); i++) {
+          field_generators_.get(descriptor_->field(i))
+                           .GenerateColumnarAddToCollection(printer);
+      }
+
+    printer->Outdent();
+    printer->Print("}\n\n");
+
+    // public abstract ByteBuffer[] asByteBuffers();
+    printer->Print(
+      "@java.lang.Override\n"
+      "public ByteBuffer[] asByteBuffers() {\n");
+    printer->Indent();
+      printer->Print(
+        "java.util.ArrayList<ByteBuffer> byteBuffers = "
+        "new ArrayList<ByteBuffer>();\n");
+      for (int i = 0; i < descriptor_->field_count(); i++) {
+        field_generators_.get(descriptor_->field(i))
+                         .GenerateColumnarGetByteBuffers(printer);
+      }
+      printer->Print("return byteBuffers.toArray();\n");
+    printer->Outdent();
+    printer->Print("}\n");
+
+  printer->Outdent();
+  printer->Print("}\n");
+  // End of Collection.
+
+  // The columnar version of the protobuf.
+  printer->Print(
+    "public static final class Columnar\n implements"
+    "  implements $classname$OrBuilder {\n",
+    "classname", descriptor_->name());
+  printer->Indent();
+    printer->Print(
+      "private Collection collection;\n"
+      "private int index;\n"
+      "public Columnar(Collection collection, int index) {\n"
+      "  this.collection = collection;\n"
+      "  this.index = index;\n"
+      "}\n");
+    for (int i = 0; i < descriptor_->field_count(); i++) {
+      field_generators_.get(descriptor_->field(i))
+                       .GenerateColumnarClassMembers(printer);
+    }
+  printer->Outdent();
+  printer->Print("}\n");
 }
 
 }  // namespace java

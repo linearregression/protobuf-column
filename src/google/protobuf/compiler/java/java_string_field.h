@@ -69,6 +69,14 @@ class StringFieldGenerator : public FieldGenerator {
   void GenerateHashCode(io::Printer* printer) const;
   string GetBoxedType() const;
 
+  // Columnar collection methods.
+  void GenerateColumnarCollectionMembers(io::Printer* printer) const;
+  void GenerateColumnarInitWithCapacity(io::Printer* printer) const;
+  void GenerateColumnarInitWithByteBuffers(io::Printer* printer) const;
+  void GenerateColumnarAddToCollection(io::Printer* printer) const;
+  void GenerateColumnarGetByteBuffers(io::Printer* printer) const;
+  void GenerateColumnarClassMembers(io::Printer* printer) const;
+
  private:
   const FieldDescriptor* descriptor_;
   map<string, string> variables_;

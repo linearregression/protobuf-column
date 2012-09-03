@@ -165,6 +165,7 @@ void SetPrimitiveVariables(const FieldDescriptor* descriptor,
   (*variables)["number"] = SimpleItoa(descriptor->number());
   (*variables)["type"] = PrimitiveTypeName(GetJavaType(descriptor));
   (*variables)["boxed_type"] = BoxedPrimitiveTypeName(GetJavaType(descriptor));
+  (*variables)["column_class_name"] = ColumnClassName(GetJavaType(descriptor));
   (*variables)["field_type"] = (*variables)["type"];
   (*variables)["field_list_type"] = "java.util.List<" +
       (*variables)["boxed_type"] + ">";
@@ -711,6 +712,57 @@ GenerateHashCode(io::Printer* printer) const {
 
 string RepeatedPrimitiveFieldGenerator::GetBoxedType() const {
   return BoxedPrimitiveTypeName(GetJavaType(descriptor_));
+}
+
+// -----------------------------------------------------------------------------
+// Columnar collection section
+// -----------------------------------------------------------------------------
+
+void PrimitiveFieldGenerator::
+GenerateColumnarCollectionMembers(io::Printer* printer) const {
+  printer->Print(variables_,
+    "private $column_class_name$ $name$Column = new $column_class_name$();\n"
+    "$deprecation$$type$ get$capitalized_name$(int index) { "
+    " return $name$Column.get(index);"
+    "}\n");
+}
+
+void PrimitiveFieldGenerator::
+GenerateColumnarInitWithCapacity(io::Printer* printer) const {
+  printer->Print(variables_,
+    "$name$Column.initialize(initialCapacity);\n");
+}
+
+void PrimitiveFieldGenerator::
+GenerateColumnarInitWithByteBuffers(io::Printer* printer) const {
+  printer->Print(variables_,
+    "$name$Column.initialize(iter);\n");
+}
+
+void PrimitiveFieldGenerator::
+GenerateColumnarAddToCollection(io::Printer* printer) const {
+  printer->Print(variables_,
+    "$name$Column.add(elem.get$capitalized_name$());\n");
+}
+
+void PrimitiveFieldGenerator::
+GenerateColumnarGetByteBuffers(io::Printer* printer) const {
+  printer->Print(variables_,
+    "byteBuffers.addAll($name$Column.asByteBuffers());\n");
+}
+
+void PrimitiveFieldGenerator::
+GenerateColumnarClassMembers(io::Printer* printer) const {
+  // TODO(rxin): implement a proper has...
+  printer->Print(variables_,
+    "$deprecation$public boolean has$capitalized_name$() {\n"
+    "  return true;\n"
+    "}\n");
+
+  printer->Print(variables_,
+    "$deprecation$public $type$ get$capitalized_name$() {"
+    " return collection.get$capitalized_name$(index); "
+    "}\n");
 }
 
 }  // namespace java

@@ -66,8 +66,15 @@ class PrimitiveFieldGenerator : public FieldGenerator {
   void GenerateFieldBuilderInitializationCode(io::Printer* printer) const;
   void GenerateEqualsCode(io::Printer* printer) const;
   void GenerateHashCode(io::Printer* printer) const;
-
   string GetBoxedType() const;
+
+  // Columnar collection methods.
+  void GenerateColumnarCollectionMembers(io::Printer* printer) const;
+  void GenerateColumnarInitWithCapacity(io::Printer* printer) const;
+  void GenerateColumnarInitWithByteBuffers(io::Printer* printer) const;
+  void GenerateColumnarAddToCollection(io::Printer* printer) const;
+  void GenerateColumnarGetByteBuffers(io::Printer* printer) const;
+  void GenerateColumnarClassMembers(io::Printer* printer) const;
 
  private:
   const FieldDescriptor* descriptor_;

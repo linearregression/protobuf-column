@@ -70,6 +70,9 @@ class MessageGenerator {
   // Generates the base interface that both the class and its builder implement
   void GenerateInterface(io::Printer* printer);
 
+  // Generate columnar collection related definitions.
+  void GenerateColumnarCollection(io::Printer* printer);
+
   // Generate code to register all contained extensions with an
   // ExtensionRegistry.
   void GenerateExtensionRegistrationCode(io::Printer* printer);

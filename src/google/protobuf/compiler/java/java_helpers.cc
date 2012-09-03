@@ -472,6 +472,32 @@ string GenerateSetBitToLocal(int bitIndex) {
   return result;
 }
 
+// -----------------------------------------------------------------------------
+// Columnar collection section
+// -----------------------------------------------------------------------------
+
+const char* ColumnClassName(JavaType type) {
+  switch (type) {
+    case JAVATYPE_INT    :
+      return "edu.berkeley.amplab.columnar.IntColumn";
+    case JAVATYPE_LONG   :
+      return "edu.berkeley.amplab.columnar.LongColumn";
+    case JAVATYPE_FLOAT  :
+      return "edu.berkeley.amplab.columnar.FloatColumn";
+    case JAVATYPE_DOUBLE :
+      return "edu.berkeley.amplab.columnar.DoubleColumn";
+    case JAVATYPE_BOOLEAN:
+      return "edu.berkeley.amplab.columnar.BooleanColumn";
+    case JAVATYPE_BYTES  :
+      return "edu.berkeley.amplab.columnar.ByteColumn";
+    // No default because we want the compiler to complain if any new
+    // JavaTypes are added.
+  }
+
+  GOOGLE_LOG(FATAL) << "Can't get here.";
+  return NULL;
+}
+
 }  // namespace java
 }  // namespace compiler
 }  // namespace protobuf

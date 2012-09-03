@@ -599,6 +599,58 @@ string RepeatedStringFieldGenerator::GetBoxedType() const {
   return "String";
 }
 
+// -----------------------------------------------------------------------------
+// Columnar collection section
+// -----------------------------------------------------------------------------
+
+void StringFieldGenerator::
+GenerateColumnarCollectionMembers(io::Printer* printer) const {
+  printer->Print(variables_,
+    "private edu.berkeley.amplab.columnar.Column.StringColumn $name$Column ="
+    " new edu.berkeley.amplab.columnar.Column.StringColumn();\n"
+    "$deprecation$String get$capitalized_name$(int index) {"
+    " return $name$Column.get(index); "
+    "}\n");
+}
+
+void StringFieldGenerator::
+GenerateColumnarInitWithCapacity(io::Printer* printer) const {
+  printer->Print(variables_,
+    "$name$Column.initialize(initialCapacity);\n");
+}
+
+void StringFieldGenerator::
+GenerateColumnarInitWithByteBuffers(io::Printer* printer) const {
+  printer->Print(variables_,
+    "$name$Column.initialize(iter);\n");
+}
+
+void StringFieldGenerator::
+GenerateColumnarAddToCollection(io::Printer* printer) const {
+  printer->Print(variables_,
+    "$name$Column.add(elem.get$capitalized_name$());\n");
+}
+
+void StringFieldGenerator::
+GenerateColumnarGetByteBuffers(io::Printer* printer) const {
+  printer->Print(variables_,
+    "byteBuffers.addAll($name$Column.asByteBuffers());\n");
+}
+
+void StringFieldGenerator::
+GenerateColumnarClassMembers(io::Printer* printer) const {
+  // TODO(rxin): implement a proper has...
+  printer->Print(variables_,
+    "$deprecation$public boolean has$capitalized_name$() {"
+    " return true; "
+    "}\n");
+
+  printer->Print(variables_,
+    "$deprecation$public String get$capitalized_name$() {"
+    " return collection.get$capitalized_name$(index); "
+    "}\n");
+}
+
 }  // namespace java
 }  // namespace compiler
 }  // namespace protobuf

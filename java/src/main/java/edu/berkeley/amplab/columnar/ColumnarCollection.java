@@ -1,6 +1,5 @@
 package edu.berkeley.amplab.columnar;
 
-import java.lang.Iterable;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
