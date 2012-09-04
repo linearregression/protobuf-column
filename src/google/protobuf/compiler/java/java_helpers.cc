@@ -479,17 +479,17 @@ string GenerateSetBitToLocal(int bitIndex) {
 const char* ColumnClassName(JavaType type) {
   switch (type) {
     case JAVATYPE_INT    :
-      return "edu.berkeley.amplab.columnar.IntColumn";
+      return "edu.berkeley.amplab.columnar.Column.IntColumn";
     case JAVATYPE_LONG   :
-      return "edu.berkeley.amplab.columnar.LongColumn";
+      return "edu.berkeley.amplab.columnar.Column.LongColumn";
     case JAVATYPE_FLOAT  :
-      return "edu.berkeley.amplab.columnar.FloatColumn";
+      return "edu.berkeley.amplab.columnar.Column.FloatColumn";
     case JAVATYPE_DOUBLE :
-      return "edu.berkeley.amplab.columnar.DoubleColumn";
+      return "edu.berkeley.amplab.columnar.Column.DoubleColumn";
     case JAVATYPE_BOOLEAN:
-      return "edu.berkeley.amplab.columnar.BooleanColumn";
+      return "edu.berkeley.amplab.columnar.Column.BooleanColumn";
     case JAVATYPE_BYTES  :
-      return "edu.berkeley.amplab.columnar.ByteColumn";
+      return "edu.berkeley.amplab.columnar.Column.ByteColumn";
     // No default because we want the compiler to complain if any new
     // JavaTypes are added.
   }

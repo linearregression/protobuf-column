@@ -72,6 +72,9 @@ class MessageGenerator {
 
   // Generate columnar collection related definitions.
   void GenerateColumnarCollection(io::Printer* printer);
+  // Checks whether the given protobuf message is eligible for columnar
+  // collection code generation.
+  bool ValidForColumnarCollection();
 
   // Generate code to register all contained extensions with an
   // ExtensionRegistry.

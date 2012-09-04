@@ -69,6 +69,7 @@ class PrimitiveFieldGenerator : public FieldGenerator {
   string GetBoxedType() const;
 
   // Columnar collection methods.
+  bool ValidForColumnarCollection() const { return true; }
   void GenerateColumnarCollectionMembers(io::Printer* printer) const;
   void GenerateColumnarInitWithCapacity(io::Printer* printer) const;
   void GenerateColumnarInitWithByteBuffers(io::Printer* printer) const;

@@ -1,7 +1,9 @@
 package edu.berkeley.amplab.columnar;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
@@ -34,7 +36,7 @@ public abstract class Column {
    * 
    * @return an array of ByteBuffer serializing this column.
    */
-  public abstract ByteBuffer[] asByteBuffers();
+  public abstract List<ByteBuffer> asByteBuffers();
 
   /**
    * Primitive integer column.
@@ -53,11 +55,11 @@ public abstract class Column {
     }
 
     @Override
-    public ByteBuffer[] asByteBuffers() {
+    public List<ByteBuffer> asByteBuffers() {
       arr.trim();
       ByteBuffer b = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE * arr.size());
       b.asIntBuffer().put(arr.elements());
-      return new ByteBuffer[] { b };
+      return Arrays.asList(new ByteBuffer[] { b });
     }
 
     public int get(int index) {
@@ -86,11 +88,11 @@ public abstract class Column {
     }
 
     @Override
-    public ByteBuffer[] asByteBuffers() {
+    public List<ByteBuffer> asByteBuffers() {
       arr.trim();
       ByteBuffer b = ByteBuffer.allocate(Long.SIZE / Byte.SIZE * arr.size());
       b.asLongBuffer().put(arr.elements());
-      return new ByteBuffer[] { b };
+      return Arrays.asList(new ByteBuffer[] { b });
     }
 
     public long get(int index) {
@@ -119,11 +121,11 @@ public abstract class Column {
     }
 
     @Override
-    public ByteBuffer[] asByteBuffers() {
+    public List<ByteBuffer> asByteBuffers() {
       arr.trim();
       ByteBuffer b = ByteBuffer.allocate(Float.SIZE / Byte.SIZE * arr.size());
       b.asFloatBuffer().put(arr.elements());
-      return new ByteBuffer[] { b };
+      return Arrays.asList(new ByteBuffer[] { b });
     }
 
     public float get(int index) {
@@ -152,11 +154,11 @@ public abstract class Column {
     }
 
     @Override
-    public ByteBuffer[] asByteBuffers() {
+    public List<ByteBuffer> asByteBuffers() {
       arr.trim();
       ByteBuffer b = ByteBuffer.allocate(Double.SIZE / Byte.SIZE * arr.size());
       b.asDoubleBuffer().put(arr.elements());
-      return new ByteBuffer[] { b };
+      return Arrays.asList(new ByteBuffer[] { b });
     }
 
     public double get(int index) {
@@ -185,10 +187,10 @@ public abstract class Column {
     }
 
     @Override
-    public ByteBuffer[] asByteBuffers() {
+    public List<ByteBuffer> asByteBuffers() {
       arr.trim();
-      return new ByteBuffer[] { ByteBuffer.allocate(arr.size()).put(
-          arr.elements()) };
+      return Arrays.asList(new ByteBuffer[] { ByteBuffer.allocate(arr.size())
+          .put(arr.elements()) });
     }
 
     public byte get(int index) {
@@ -218,10 +220,10 @@ public abstract class Column {
     }
 
     @Override
-    public ByteBuffer[] asByteBuffers() {
+    public List<ByteBuffer> asByteBuffers() {
       arr.trim();
-      return new ByteBuffer[] { ByteBuffer.allocate(arr.size()).put(
-          arr.elements()) };
+      return Arrays.asList(new ByteBuffer[] { ByteBuffer.allocate(arr.size())
+          .put(arr.elements()) });
     }
 
     public boolean get(int index) {
@@ -254,11 +256,11 @@ public abstract class Column {
     }
 
     @Override
-    public ByteBuffer[] asByteBuffers() {
+    public List<ByteBuffer> asByteBuffers() {
       arr.trim();
       ByteBuffer b = ByteBuffer.allocate(Long.SIZE / Byte.SIZE * arr.size());
       b.asLongBuffer().put(arr.elements());
-      return new ByteBuffer[] { b };
+      return Arrays.asList(new ByteBuffer[] { b });
     }
 
     public boolean get(int index) {
@@ -299,14 +301,14 @@ public abstract class Column {
     }
 
     @Override
-    public ByteBuffer[] asByteBuffers() {
+    public List<ByteBuffer> asByteBuffers() {
       arr.trim();
       posIndex.trim();
       ByteBuffer b = ByteBuffer.allocate(arr.size()).put(arr.elements());
       ByteBuffer ib = ByteBuffer
           .allocate(Integer.SIZE / Byte.SIZE * arr.size());
       ib.asIntBuffer().put(posIndex.elements());
-      return new ByteBuffer[] { b, ib };
+      return Arrays.asList(new ByteBuffer[] { b, ib });
     }
 
     public String get(int index) {

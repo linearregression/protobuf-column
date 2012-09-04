@@ -2,6 +2,7 @@ package edu.berkeley.amplab.columnar;
 
 import java.nio.ByteBuffer;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public abstract class ColumnarCollection<E> implements Iterable<E> {
@@ -27,7 +28,7 @@ public abstract class ColumnarCollection<E> implements Iterable<E> {
    * 
    * @return an array of ByteBuffer serializing this collection.
    */
-  public abstract ByteBuffer[] asByteBuffers();
+  public abstract List<ByteBuffer> asByteBuffers();
 
   /**
    * Returns the number of elements in this collection.

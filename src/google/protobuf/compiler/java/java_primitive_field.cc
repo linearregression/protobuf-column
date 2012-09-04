@@ -722,8 +722,8 @@ void PrimitiveFieldGenerator::
 GenerateColumnarCollectionMembers(io::Printer* printer) const {
   printer->Print(variables_,
     "private $column_class_name$ $name$Column = new $column_class_name$();\n"
-    "$deprecation$$type$ get$capitalized_name$(int index) { "
-    " return $name$Column.get(index);"
+    "$deprecation$$type$ get$capitalized_name$(int index) {"
+    " return $name$Column.get(index); "
     "}\n");
 }
 

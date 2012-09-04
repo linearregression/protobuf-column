@@ -1285,11 +1285,28 @@ void MessageGenerator::GenerateExtensionRegistrationCode(io::Printer* printer) {
 
 // ===================================================================
 
+bool MessageGenerator::ValidForColumnarCollection() {
+  // If any of the field is not valid for columnar collection, this message
+  // definition is not valid for columnar collection.
+  for (int i = 0; i < descriptor_->field_count(); i++) {
+    if (!field_generators_.get(descriptor_->field(i))
+          .ValidForColumnarCollection()) {
+      return false;
+    }
+  }
+  return true;
+}
+
 void MessageGenerator::GenerateColumnarCollection(io::Printer* printer) {
+
+  // Skip the columnar collection code generation if the message is not valid.
+  if (!ValidForColumnarCollection()) {
+    return;
+  }
 
   // Begin Collection.
   printer->Print(
-    "public static class ColumnarCollection implements\n"
+    "public static class ColumnarCollection extends\n"
     "  edu.berkeley.amplab.columnar.ColumnarCollection"
     "<$classname$OrBuilder> {\n",
     "classname", descriptor_->name());
@@ -1319,8 +1336,9 @@ void MessageGenerator::GenerateColumnarCollection(io::Printer* printer) {
     // public abstract void initialize(Iterable<ByteBuffer> byteBuffers);
     printer->Print(
       "@java.lang.Override\n"
-      "public void initialize(Iterable<ByteBuffer> byteBuffers) {\n"
-      "  java.util.Iterator<ByteBuffer> iter = byteBuffers.iterator();\n");
+      "public void initialize(Iterable<java.nio.ByteBuffer> byteBuffers) {\n"
+      "  java.util.Iterator<java.nio.ByteBuffer> iter ="
+      " byteBuffers.iterator();\n");
     printer->Indent();
       for (int i = 0; i < descriptor_->field_count(); i++) {
         field_generators_.get(descriptor_->field(i))
@@ -1359,19 +1377,19 @@ void MessageGenerator::GenerateColumnarCollection(io::Printer* printer) {
     printer->Outdent();
     printer->Print("}\n\n");
 
-    // public abstract ByteBuffer[] asByteBuffers();
+    // public abstract List<ByteBuffer> asByteBuffers();
     printer->Print(
       "@java.lang.Override\n"
-      "public ByteBuffer[] asByteBuffers() {\n");
+      "public java.util.List<java.nio.ByteBuffer> asByteBuffers() {\n");
     printer->Indent();
       printer->Print(
-        "java.util.ArrayList<ByteBuffer> byteBuffers = "
-        "new ArrayList<ByteBuffer>();\n");
+        "java.util.ArrayList<java.nio.ByteBuffer> byteBuffers = "
+        "new java.util.ArrayList<java.nio.ByteBuffer>();\n");
       for (int i = 0; i < descriptor_->field_count(); i++) {
         field_generators_.get(descriptor_->field(i))
                          .GenerateColumnarGetByteBuffers(printer);
       }
-      printer->Print("return byteBuffers.toArray();\n");
+      printer->Print("return byteBuffers;\n");
     printer->Outdent();
     printer->Print("}\n");
 
@@ -1381,14 +1399,15 @@ void MessageGenerator::GenerateColumnarCollection(io::Printer* printer) {
 
   // The columnar version of the protobuf.
   printer->Print(
-    "public static final class Columnar\n implements"
-    "  implements $classname$OrBuilder {\n",
+    "public static final class Columnar\n"
+    "    extends edu.berkeley.amplab.columnar.GeneratedColumnarMessage\n"
+    "    implements $classname$OrBuilder {\n",
     "classname", descriptor_->name());
   printer->Indent();
     printer->Print(
-      "private Collection collection;\n"
+      "private ColumnarCollection collection;\n"
       "private int index;\n"
-      "public Columnar(Collection collection, int index) {\n"
+      "public Columnar(ColumnarCollection collection, int index) {\n"
       "  this.collection = collection;\n"
       "  this.index = index;\n"
       "}\n");

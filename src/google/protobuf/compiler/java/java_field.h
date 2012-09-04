@@ -73,6 +73,7 @@ class FieldGenerator {
       const = 0;
 
   // Columnar collection methods.
+  virtual bool ValidForColumnarCollection() const { return false; }
   virtual void GenerateColumnarCollectionMembers(io::Printer* printer) const {}
   virtual void GenerateColumnarInitWithCapacity(io::Printer* printer) const {}
   virtual void GenerateColumnarInitWithByteBuffers(io::Printer* printer)
